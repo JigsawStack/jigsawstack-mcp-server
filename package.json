@@ -4,8 +4,15 @@
   "description": "A suite of small fast models that automate the boring and complex tasks in every tech stack with specialized finetuning",
   "main": "index.js",
   "type": "module",
+  "bin": {
+    "jigsawstack-mcp-server": "dist/index.js"
+  },
+  "files": [
+    "dist"
+  ],
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "tsc && shx chmod +x dist/*.js",
+    "prepare": "npm run build"
   },
   "keywords": ["web", "mcp", "server", "jigsawstack", "small", "fast", "models", "automation", "tasks", "specialized", "finetuning"],
   "author": "JigsawStack",
