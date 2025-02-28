@@ -1,6 +1,6 @@
 import { McpServer, ResourceTemplate } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
-import { registerWebTools } from "./tools/web.js";
+import { registerWebTools } from "./src/tools/web.js";
 
 //creating a new MCP server instance
 const server = new McpServer({
