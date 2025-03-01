@@ -1,12 +1,15 @@
 import { z } from 'zod';
 import { JigsawStack } from 'jigsawstack';
+import { McpServer } from '@modelcontextprotocol/sdk/server/mcp';
+import { config } from 'dotenv';
+
+config();
+
 /**
  Register web-related tools on the given MCP server.
  * @param {McpServer} server - The MCP server instance to register tools on.
  */
-
-
-async function registerWebTools(server) {
+async function registerWebTools(server: McpServer) {
   const aiScrapeSchema = { //defining the zo schema for the jigsawstack.ai_scrape tool.
     url: z.string().url(),
     // element_prompts should be comma-separated strings, e.g. "title,h1" which will be converted to an array of strings.
@@ -22,7 +25,7 @@ async function registerWebTools(server) {
        * Tool implementation: Scrape a webpage and return content.
        * @param {Object} args - Parsed arguments, e.g. { url, format }.
        */
-      async (args) => {
+      async (args: { url: string; element_prompts: string[] }) => {
         console.log('Executing ai_scrape with args:', args);
         
         if (args.element_prompts == undefined){
@@ -48,7 +51,13 @@ async function registerWebTools(server) {
   } catch (err) {
     console.error("Error registering tool 'ai_scrape':", err);
   }
-
 }
 
 export { registerWebTools };
+
+// Manually define the types for the process object
+declare const process: {
+  env: {
+    JIGSAWSTACK_API_KEY: string;
+  };
+};

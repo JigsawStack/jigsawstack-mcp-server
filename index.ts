@@ -9,9 +9,7 @@ const server = new McpServer({
   description: "An MCP server for JigsawStack",
 });
 
-
 registerWebTools(server);
-
 
 //creating a new stdio server transport instance for the server
 const transport = new StdioServerTransport();
