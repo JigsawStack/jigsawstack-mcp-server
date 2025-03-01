@@ -5,6 +5,9 @@ COPY . /app
 
 WORKDIR /app
 
+# (Optional) Install TypeScript globally
+RUN npm install -g typescript
+
 RUN --mount=type=cache,target=/root/.npm npm install
 
 FROM node:22-alpine AS release
