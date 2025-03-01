@@ -5,15 +5,14 @@ COPY . /app
 
 WORKDIR /app
 
-# (Optional) Install TypeScript globally
-RUN npm install -g typescript
-
+# Install dependencies and run prepare (which now builds by copying JS files)
 RUN --mount=type=cache,target=/root/.npm npm install
 
 FROM node:22-alpine AS release
 
 WORKDIR /app
 
+# Copy the built files from the builder stage
 COPY --from=builder /app/dist /app/dist
 COPY --from=builder /app/package.json /app/package.json
 COPY --from=builder /app/package-lock.json /app/package-lock.json
