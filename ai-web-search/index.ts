@@ -45,7 +45,7 @@ const server = new McpServer({
 console.log("McpServer created, now defining tool");
 // Define a tool:
 server.tool(
-    "search",
+    "ai_web_search",
     { 
         query: z.string(), 
         ai_overview: z.boolean().optional(),
