@@ -9,6 +9,7 @@
   "files": ["dist"],
   "scripts": {
     "build": "tsc",
+    "watch": "tsc --watch",
     "start": "node dist/index.js",
     "dev": "NODE_OPTIONS=\"--loader ts-node/esm\" node index.ts",
     "inspector": "npx @modelcontextprotocol/inspector npm run dev",
