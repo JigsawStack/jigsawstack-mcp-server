@@ -16,5 +16,7 @@ RUN npm run build
 # Expose port if needed (update if your server uses another port)
 # EXPOSE 3000
 
+ENV JIGSAWSTACK_API_KEY=<YOUR_KEY>
+
 # Start the server
 CMD ["npm", "start"]
