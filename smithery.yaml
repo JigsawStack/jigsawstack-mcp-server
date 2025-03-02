@@ -3,17 +3,15 @@
 startCommand:
   type: stdio
   configSchema:
-    # JSON Schema defining the configuration options for the MCP.
     type: object
     required:
-      - jigsawStackAPIKey
+      - jigsawStackApiKey
     properties:
-      jigsawStackAPIKey:
+      jigsawStackApiKey:
         type: string
-        description: 'API key for the Jigsaw Stack API.'
-    additionalProperties: false
+        description: The API key for the JigsawStack AI Web Scrape server.
   commandFunction:
     # A JS function that produces the CLI command based on the given config to start the MCP on stdio.
     |-
-    (config) => ({ command: 'node', args: ['dist/index.js'] env: { JIGSAWSTACK_API_KEY: config.jigsawStackAPIKey } })
+    (config) => ({ command: 'node', args: ['dist/index.js'] env: { JIGSAWSTACK_API_KEY: config.jigsawStackApiKey } })
   exampleConfig: {}
