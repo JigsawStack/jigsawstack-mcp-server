@@ -13,6 +13,37 @@ import {
 } from "@modelcontextprotocol/sdk/types.js";
 
 
+const AI_WEB_SEARCH: Tool = {
+        name: "ai_web_search",
+        description: "Perform a JigsawStack search powered by AI. Get better. Faster. Smarter. Results.",
+        inputSchema: {
+            type: "object",
+            properties: {
+                query: { type: "string", description: "Search query" },
+                ai_overview: { type: "boolean", description: "AI overview" },
+                safe_search: { type: "string", enum: ["strict", "moderate", "off"], description: "Safe search level" },
+                spell_check: { type: "boolean", description: "Spell check" }
+            },
+            required: ["query"],
+        },
+    };
+
+
+console.log("Creating a new instance of Server.");
+const server: Server = new Server(
+    {
+        name: "ai-web-serach",  
+        version: "0.1.0",          
+    },
+    {
+        capabilities: {
+          tools: {},
+        },
+    }
+);
+
+
+
 const JIGSAWSTACK_API_KEY = process.env.JIGSAWSTACK_API_KEY;
 
 console.log("Checking for JIGSAWSTACK_API_KEY");
@@ -29,23 +60,6 @@ const jigsawStackClient = JigsawStack({
 
 console.log("JigsawStack client created");
 
-const TOOLS: Tool[] = [
-    {
-        name: "ai_web_search",
-        description: "Perform a JigsawStack search powered by AI. Get better. Faster. Smarter. Results.",
-        inputSchema: {
-            type: "object",
-            properties: {
-                query: { type: "string", description: "Search query" },
-                ai_overview: { type: "boolean", description: "AI overview" },
-                safe_search: { type: "string", enum: ["strict", "moderate", "off"], description: "Safe search level" },
-                spell_check: { type: "boolean", description: "Spell check" }
-            },
-            required: ["query"],
-        },
-    }
-];
-
 const search = async (query: string, ai_overview: boolean | undefined, safe_search: "strict" | "moderate" | "off" | undefined, spell_check: boolean | undefined): Promise<string> => {
     const payload: any = {};
     if (query) payload.query = query;
@@ -57,20 +71,11 @@ const search = async (query: string, ai_overview: boolean | undefined, safe_sear
     return JSON.stringify(result, null, 2);
 };
 
-// Initialize MCP server with basic configuration
-const server: Server = new Server(
-    {
-        name: "ai-web-serach",  // Server name identifier
-        version: "0.1.0",            // Server version number
-    },
-    {
-        capabilities: {
-            tools: {},      // Available tool configurations
-            resources: {},  // Resource handling capabilities
-            prompts: {}     // Prompt processing capabilities
-        },
-    }
-);
+console.log("Setting up server request handler, to return the tools");
+server.setRequestHandler(ListToolsRequestSchema, async () => ({
+    tools: [AI_WEB_SEARCH],
+}));
+
 
 console.log("Setting up server request handler, to handle the request");
 server.setRequestHandler(CallToolRequestSchema, async (request) => {
@@ -92,11 +97,6 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
             throw new McpError(ErrorCode.MethodNotFound, `Unknown tool: ${request.params.name}`);
     }
 });
-
-console.log("Setting up server request handler, to return the tools");
-server.setRequestHandler(ListToolsRequestSchema, async () => ({
-    tools: TOOLS
-}));
 
 const transport = new StdioServerTransport();
 server.connect(transport).catch((error) => {
