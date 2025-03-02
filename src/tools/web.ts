@@ -52,10 +52,8 @@ async function registerWebTools(server: McpServer) {
           throw new Error(`Failed to scrape content from ${url}`);
         }
 
-        const contentString = JSON.stringify(content);
-        const response = `The content of scraped from ${url} with prompts ${element_prompts} is: ${contentString}`;
-
-        return { content: [{ type: 'object', text: content }] };
+       
+        return { content: [{ type: 'text', text: JSON.stringify(content, null, 2) }] };
       }
     );
     console.log("Tool 'ai_scrape' registered successfully.");
