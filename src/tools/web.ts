@@ -5,6 +5,14 @@ import { config } from 'dotenv';
 
 config();
 
+const JIGSAWSTACK_API_KEY = process.env.JIGSAWSTACK_API_KEY;
+if (!JIGSAWSTACK_API_KEY) {
+  throw new Error("Environment variable JIGSAWSTACK_API_KEY is not defined");
+}
+
+// Assert the type of JIGSAWSTACK_API_KEY as string
+const jigsawStackApiKey: string = JIGSAWSTACK_API_KEY;
+
 /**
  Register web-related tools on the given MCP server.
  * @param {McpServer} server - The MCP server instance to register tools on.
@@ -24,17 +32,18 @@ async function registerWebTools(server: McpServer) {
       /** 
        * Tool implementation: Scrape a webpage and return content.
        * @param {Object} args - Parsed arguments, e.g. { url, format }.
+       * @param {RequestHandlerExtra} extra - Extra request handler information.
        */
       async (args: { url: string; element_prompts: string[] }) => {
         console.log('Executing ai_scrape with args:', args);
-        console.log('Using API Key:', process.env.JIGSAWSTACK_API_KEY);
+       
         
         if (args.element_prompts == undefined){
           throw new Error('parameter \'element_prompts\' is required'); //check if the element_prompts parameter is defined.
         }
 
         const { url, element_prompts } = args;
-        const jigsawStackClient = JigsawStack({ apiKey: process.env.JIGSAWSTACK_API_KEY });
+        const jigsawStackClient = JigsawStack({ apiKey: jigsawStackApiKey });
         const payload = { url, element_prompts: element_prompts };
         const content = await jigsawStackClient.web.ai_scrape(payload);
         console.log('Scraped content:', content);
@@ -56,10 +65,3 @@ async function registerWebTools(server: McpServer) {
 }
 
 export { registerWebTools };
-
-// Manually define the types for the process object
-declare const process: {
-  env: {
-    JIGSAWSTACK_API_KEY: string;
-  };
-};

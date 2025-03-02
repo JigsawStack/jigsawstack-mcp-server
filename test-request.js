@@ -1,7 +1,7 @@
 import { spawn } from "child_process";
 
 // we must run the server first
-const serverProc = spawn("node", ["index.js"]);
+const serverProc = spawn("node", ["dist/index.js"]);
 
 const request = JSON.stringify({ // this is the request we want to send to the server
   jsonrpc: "2.0",
