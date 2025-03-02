@@ -18,5 +18,5 @@ RUN npm run build
 
 ENV JIGSAWSTACK_API_KEY=<YOUR_KEY>
 
-# Start the server
-CMD ["npm", "start"]
+# Command will be provided by smithery.yaml
+CMD ["node", "dist/index.js"]
