@@ -31,8 +31,8 @@ console.log("JigsawStack client created");
 
 const TOOLS: Tool[] = [
     {
-        name: "jigsaw_stack_search",
-        description: "Perform a JigsawStack search",
+        name: "ai_web_search",
+        description: "Perform a JigsawStack search powered by AI. Get better. Faster. Smarter. Results.",
         inputSchema: {
             type: "object",
             properties: {
@@ -75,7 +75,7 @@ const server: Server = new Server(
 console.log("Setting up server request handler, to handle the request");
 server.setRequestHandler(CallToolRequestSchema, async (request) => {
     switch (request.params.name) {
-        case "jigsaw_stack_search":
+        case "ai_web_search":
             const { query, ai_overview, safe_search, spell_check } = request.params.arguments as {
                 query: string;
                 ai_overview?: boolean;
