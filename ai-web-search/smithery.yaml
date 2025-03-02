@@ -5,7 +5,7 @@ startCommand:
   configSchema:
     type: object
     required:
-      - jigsawStackApiKey
+      - jigsawstackApiKey
     properties:
       jigsawStackApiKey:
         type: string
@@ -13,5 +13,5 @@ startCommand:
   commandFunction:
     # A JS function that produces the CLI command based on the given config to start the MCP on stdio.
     |-
-    (config) => ({ command: 'node', args: ['dist/index.js'], env: { JIGSAWSTACK_API_KEY: config.jigsawStackApiKey } })
+    (config) => ({ command: 'node', args: ['dist/index.js'], env: { JIGSAWSTACK_API_KEY: config.jigsawstackApiKey } })
   exampleConfig: {}
