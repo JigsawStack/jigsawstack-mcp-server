@@ -27,6 +27,7 @@ async function registerWebTools(server: McpServer) {
        */
       async (args: { url: string; element_prompts: string[] }) => {
         console.log('Executing ai_scrape with args:', args);
+        console.log('Using API Key:', process.env.JIGSAWSTACK_API_KEY);
         
         if (args.element_prompts == undefined){
           throw new Error('parameter \'element_prompts\' is required'); //check if the element_prompts parameter is defined.
@@ -36,6 +37,7 @@ async function registerWebTools(server: McpServer) {
         const jigsawStackClient = JigsawStack({ apiKey: process.env.JIGSAWSTACK_API_KEY });
         const payload = { url, element_prompts: element_prompts };
         const content = await jigsawStackClient.web.ai_scrape(payload);
+        console.log('Scraped content:', content);
 
         if (!content) {
           throw new Error(`Failed to scrape content from ${url}`);
