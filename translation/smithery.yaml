@@ -9,7 +9,6 @@ startCommand:
     properties:
       jigsawstackApiKey:
         type: string
-        description: Your API key from JigsawStack.
   commandFunction:
     # A JS function that produces the CLI command based on the given config to start the MCP on stdio.
     |-
