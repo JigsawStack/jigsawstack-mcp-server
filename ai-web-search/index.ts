@@ -1,4 +1,3 @@
-
 import { JigsawStack } from "jigsawstack";
 import { z } from "zod";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
@@ -11,7 +10,6 @@ import {
     ErrorCode,
     TextContent
 } from "@modelcontextprotocol/sdk/types.js";
-
 
 const AI_WEB_SEARCH: Tool = {
         name: "ai_web_search",
@@ -28,21 +26,20 @@ const AI_WEB_SEARCH: Tool = {
         },
     };
 
-
 console.log("Creating a new instance of Server.");
 const server: Server = new Server(
     {
-        name: "ai-web-serach",  
+        name: "ai-web-search",  
         version: "0.1.0",          
     },
     {
         capabilities: {
-          tools: {},
+          tools: {
+            ai_web_search: AI_WEB_SEARCH
+          },
         },
     }
 );
-
-
 
 const JIGSAWSTACK_API_KEY = process.env.JIGSAWSTACK_API_KEY;
 
