@@ -7,7 +7,7 @@ startCommand:
     required:
       - jigsawstackApiKey
     properties:
-      jigsawStackApiKey:
+      jigsawstackApiKey:
         type: string
         description: The API key for the JigsawStack AI Web Scrape server.
   commandFunction:
