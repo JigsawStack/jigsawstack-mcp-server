@@ -55,7 +55,7 @@ async function registerWebTools(server: McpServer) {
         const contentString = JSON.stringify(content);
         const response = `The content of scraped from ${url} with prompts ${element_prompts} is: ${contentString}`;
 
-        return { content: [{ type: 'text', text: response }] };
+        return { content: [{ type: 'object', text: content }] };
       }
     );
     console.log("Tool 'ai_scrape' registered successfully.");
