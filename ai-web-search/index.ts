@@ -1,8 +1,16 @@
 
 import { JigsawStack } from "jigsawstack";
-import { McpServer, ResourceTemplate } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
+import { Server } from "@modelcontextprotocol/sdk/server/index.js";
+import {
+    CallToolRequestSchema,
+    ListToolsRequestSchema,
+    Tool,
+    McpError,
+    ErrorCode,
+    TextContent
+} from "@modelcontextprotocol/sdk/types.js";
 
 
 const JIGSAWSTACK_API_KEY = process.env.JIGSAWSTACK_API_KEY;
@@ -20,9 +28,25 @@ const jigsawStackClient = JigsawStack({
 });
 
 console.log("JigsawStack client created");
-const search = async (query: string, ai_overview: boolean | undefined, safe_search: "strict" | "moderate" | "off" | undefined , spell_check: boolean | undefined) => {
 
-    // build a payload out of non empty parameters
+const TOOLS: Tool[] = [
+    {
+        name: "jigsaw_stack_search",
+        description: "Perform a JigsawStack search",
+        inputSchema: {
+            type: "object",
+            properties: {
+                query: { type: "string", description: "Search query" },
+                ai_overview: { type: "boolean", description: "AI overview" },
+                safe_search: { type: "string", enum: ["strict", "moderate", "off"], description: "Safe search level" },
+                spell_check: { type: "boolean", description: "Spell check" }
+            },
+            required: ["query"],
+        },
+    }
+];
+
+const search = async (query: string, ai_overview: boolean | undefined, safe_search: "strict" | "moderate" | "off" | undefined, spell_check: boolean | undefined): Promise<string> => {
     const payload: any = {};
     if (query) payload.query = query;
     if (ai_overview !== undefined) payload.ai_overview = ai_overview;
@@ -30,42 +54,57 @@ const search = async (query: string, ai_overview: boolean | undefined, safe_sear
     if (spell_check !== undefined) payload.spell_check = spell_check;
 
     const result = await jigsawStackClient.web.search(payload);
-    
     return JSON.stringify(result, null, 2);
-}
+};
 
-// Define a server:
-console.log("Creating McpServer");
-const server = new McpServer({
-    name: "ai-web-search",
-    description: "Allow AI to do the browsing for you, a mcp tool powered by JigsawStack",
-    version: "0.1.0"
-  });
-
-console.log("McpServer created, now defining tool");
-// Define a tool:
-server.tool(
-    "ai_web_search",
-    { 
-        query: z.string(), 
-        ai_overview: z.boolean().optional(),
-        safe_search: z.enum(["strict", "moderate", "off"]).optional(), 
-        spell_check: z.boolean().optional() 
+// Initialize MCP server with basic configuration
+const server: Server = new Server(
+    {
+        name: "ai-web-serach",  // Server name identifier
+        version: "0.1.0",            // Server version number
     },
-    async ({ query, ai_overview, safe_search, spell_check }) => {
-        const result = await search(query, ai_overview, safe_search, spell_check);
-        return {
-            content: [{ type: "text", text: result }]
-        };
+    {
+        capabilities: {
+            tools: {},      // Available tool configurations
+            resources: {},  // Resource handling capabilities
+            prompts: {}     // Prompt processing capabilities
+        },
     }
 );
 
-console.log("Tool defined, now connecting to transport");
+console.log("Setting up server request handler, to handle the request");
+server.setRequestHandler(CallToolRequestSchema, async (request) => {
+    switch (request.params.name) {
+        case "jigsaw_stack_search":
+            const { query, ai_overview, safe_search, spell_check } = request.params.arguments as {
+                query: string;
+                ai_overview?: boolean;
+                safe_search?: "strict" | "moderate" | "off";
+                spell_check?: boolean;
+            };
+            try {
+                const result = await search(query, ai_overview, safe_search, spell_check);
+                return { content: [{ type: "text", text: result }] };
+            } catch (error) {
+                return { content: [{ type: "text", text: `Failed to perform search: ${(error as Error).message}` }], isError: true };
+            }
+        default:
+            throw new McpError(ErrorCode.MethodNotFound, `Unknown tool: ${request.params.name}`);
+    }
+});
 
-console.log("Enabling transport");
+console.log("Setting up server request handler, to return the tools");
+server.setRequestHandler(ListToolsRequestSchema, async () => ({
+    tools: TOOLS
+}));
+
 const transport = new StdioServerTransport();
-await server.connect(transport);
-console.log("Transport enabled, server is now running waiting for requests");
+server.connect(transport).catch((error) => {
+    console.error("Failed to start server:", error);
+    process.exit(1);
+});
+console.log("We gucci, lesgoooo!");
+
 
 
 
