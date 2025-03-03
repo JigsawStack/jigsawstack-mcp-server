@@ -4,9 +4,9 @@ import { registerWebTools } from "./src/tools/web.js";
 
 //creating a new MCP server instance
 const server = new McpServer({
-  name: "JigsawStackMCPServer",
+  name: "AI Web Scraper",
   version: "0.1.0",
-  description: "An MCP server for JigsawStack",
+  description: "Let AI do the web scraping for you. Powered by JigsawStack",
 });
 
 registerWebTools(server);

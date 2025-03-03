@@ -1,5 +1,5 @@
 {
-  "name": "jigsawstack-mcp-server",
+  "name": "ai-web-scraper",
   "version": "0.1.0",
   "description": "A suite of small fast models that automate the boring and complex tasks in every tech stack with specialized finetuning",
   "type": "module",
