@@ -157,7 +157,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         //return ImageContent
         const content = {
           type: "text",
-          "text": base64Image,
+          text: base64Image,
           mimeType: "image/png",
         };
         return { content };
