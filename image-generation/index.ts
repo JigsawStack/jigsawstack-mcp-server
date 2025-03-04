@@ -1,4 +1,4 @@
-import { z } from "zod";
+import { number, z } from "zod";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { Server } from "@modelcontextprotocol/sdk/server/index.js";
 import { JigsawStack } from "jigsawstack";
@@ -31,6 +31,20 @@ const jigsawStackClient = JigsawStack({
 
 console.log("JigsawStack client created");
 
+
+// console.log("Testing the image_generation function");
+// const result = jigsawStackClient.image_generation({
+//   prompt: "A beautiful sunset over the ocean.",
+//   model: "sd1.5",
+//   size: "medium",
+//   advance_config: {
+//     steps: 50,
+//   },
+// });
+
+// console.log("Image generation function tested");
+// console.log("Result: ", await result);
+
 /* image_generation: (params: {
   prompt: string;
   model?: "sd1.5" | "sdxl" | "ead1.0" | "rv1.3" | "rv3" | "rv5.1" | "ar1.8";
@@ -46,22 +60,33 @@ console.log("JigsawStack client created");
   };
 }) */
 
+
+/*
+Supported Aspec
+1:1
+16:9
+21:9
+3:2
+2:3
+4:5
+5:4
+3:4
+4:3
+9:16
+9:21
+*/
+
 const generateImage = async (
   prompt: string,
-  model: "sd1.5" | "sdxl" | "ead1.0" | "rv1.3" | "rv3" | "rv5.1" | "ar1.8",
-  size: "small" | "medium" | "large",
-  steps: number,
+  steps: string | number | undefined,
   negative_prompt: string,
-  guidance: number
 ) => {
+  const parsedSteps = steps !== undefined ? Number(steps) : undefined;
   const result = await jigsawStackClient.image_generation({
     prompt: prompt,
-    model: model,
-    size: size,
     advance_config: {
       negative_prompt: negative_prompt,
-      steps: steps,
-      guidance: guidance ? guidance.toString() : undefined
+      steps: parsedSteps,
     }
   });
   return result;
@@ -73,31 +98,18 @@ const IMAGE_GENERATION: Tool = {
   inputSchema: {
     type: "object",
     properties: {
-      model: {
-        type: "string",
-        description: "The model to use for image generation.",
-        enum: ["sd1.5", "sdxl", "ead1.0", "rv1.3", "rv3", "rv5.1", "ar1.8"],
-        default: "sd1.5"
-      },
       prompt: { type: "string", description: "The prompt to generate the image." },
-      size: {
-        type: "string",
-        description: "The size of the image to generate.",
-        enum: ["small", "medium", "large"],
-        default: "medium"
-      },
       steps: { type: "number", description: "The number of steps for image generation.", minimum: 1, maximum: 90, default: 50 },
       negative_prompt: { type: "string", description: "Negative prompt to avoid certain elements." },
-      guidance: { type: "number", description: "Guidance scale for image generation." }
     },
-    required: ["prompt", "size", "steps"]
+    required: ["prompt"]
   }
 };
 
 console.log("Creating a new instance of Server.");
 const server: Server = new Server(
   {
-    name: "vOCR",
+    name: "Image Generation",
     version: "0.1.0",
   },
   {
@@ -119,15 +131,13 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
   switch (request.params.name) {
     case "IMAGE_GENERATION": {
       try {
-        const { model, prompt, size, steps, negative_prompt, guidance } = request.params.arguments as {
-          model: "sd1.5" | "sdxl" | "ead1.0" | "rv1.3" | "rv3" | "rv5.1" | "ar1.8",
+        const { prompt, steps, negative_prompt } = request.params.arguments as {
+          
           prompt: string,
-          size: "small" | "medium" | "large",
-          steps: number,
+          steps: number | undefined | string,
           negative_prompt: string,
-          guidance: number
         };
-        const result = await generateImage(prompt, model, size, steps, negative_prompt, guidance);
+        const result = await generateImage(prompt, steps, negative_prompt);
 
         // convert the image from blob and return it as base64 content
         const blob = await result.blob();
