@@ -93,13 +93,13 @@ const generateImage = async (
 };
 
 const IMAGE_GENERATION: Tool = {
-  name: "IMAGE_GENERATION",
+  name: "image_generation",
   description: "Generate images using JigsawStack's image generation API.",
   inputSchema: {
     type: "object",
     properties: {
       prompt: { type: "string", description: "The prompt to generate the image." },
-      steps: { type: "string", description: "The number of steps for image generation.", minimum: 1, maximum: 90, default: 50 },
+      steps: { type: "string", description: "The number of steps for image generation." },
       negative_prompt: { type: "string", description: "Negative prompt to avoid certain elements." },
     },
     required: ["prompt"]
@@ -140,7 +140,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
 
         try{
           if(steps !== undefined){
-            number().parse(steps);
+            Number(steps);
           }
         }
         catch(error){
