@@ -18,7 +18,6 @@ const TRANSLATION: Tool = {
             type: "object",
             properties: {
                 text: { type: "string", description: "Text in current langauge." },
-                current_language: { type: "string", description: "Current Langauge code in en | es | jp format." },
                 target_language: { type: "string", description: "Current Langauge code in en | es | jp format." },
             },
             required: ["text", "current_language", "target_language"],
@@ -57,10 +56,9 @@ const jigsawStackClient = JigsawStack({
 console.log("JigsawStack client created");
 
 
-const translate = async (text: string, current_language: string, target_language: string): Promise<string> => {
+const translate = async (text: string, target_language: string): Promise<string> => {
     const payload = {
         text: text,
-        current_language: current_language,
         target_language: target_language,
     };
     const result = await jigsawStackClient.translate(payload);
@@ -77,13 +75,12 @@ console.log("Setting up server request handler, to handle the request");
 server.setRequestHandler(CallToolRequestSchema, async (request) => {
     switch (request.params.name) {
         case "translation":
-            const { text, current_language, target_language } = request.params.arguments as {
+            const { text, target_language } = request.params.arguments as {
                 text: string;
-                current_language: string;
                 target_language: string;
             };
             try {
-                const result = await translate(text, current_language, target_language);
+                const result = await translate(text, target_language);
                 return { content: [{ type: "text", text: result }] };
             } catch (error) {
                 return { content: [{ type: "text", text: `Failed to perform translation: ${(error as Error).message}` }], isError: true };
