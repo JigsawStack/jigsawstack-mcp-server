@@ -129,7 +129,7 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
 console.log("Setting up server request handler, to handle the request");
 server.setRequestHandler(CallToolRequestSchema, async (request) => {
   switch (request.params.name) {
-    case "IMAGE_GENERATION": {
+    case "image_generation": {
       try {
         const { prompt, steps, negative_prompt } = request.params.arguments as {
           
