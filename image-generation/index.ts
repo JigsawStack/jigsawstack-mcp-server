@@ -99,7 +99,7 @@ const IMAGE_GENERATION: Tool = {
     type: "object",
     properties: {
       prompt: { type: "string", description: "The prompt to generate the image." },
-      steps: { type: "number", description: "The number of steps for image generation.", minimum: 1, maximum: 90, default: 50 },
+      steps: { type: "string", description: "The number of steps for image generation.", minimum: 1, maximum: 90, default: 50 },
       negative_prompt: { type: "string", description: "Negative prompt to avoid certain elements." },
     },
     required: ["prompt"]
@@ -137,6 +137,16 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
           steps: number | undefined | string,
           negative_prompt: string,
         };
+
+        try{
+          if(steps !== undefined){
+            number().parse(steps);
+          }
+        }
+        catch(error){
+          throw new McpError(ErrorCode.InvalidParams, `Invalid steps value: ${steps}`);
+        }
+
         const result = await generateImage(prompt, steps, negative_prompt);
 
         // convert the image from blob and return it as base64 content
