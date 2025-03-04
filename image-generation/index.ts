@@ -155,12 +155,12 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         const base64Image = `data:image/png;base64,${Buffer.from(arrayBuffer).toString("base64")}`;
         
         //return ImageContent
-        const ImageContent = {
-          type: "image",
-          base64: base64Image,
+        const content = {
+          type: "text",
+          "base64": base64Image,
           mimeType: "image/png",
         };
-        return { ImageContent };
+        return { content };
       } catch (error: any) {
         console.error("Error processing IMAGE_GENERATION request:", error);
         const content = [{
