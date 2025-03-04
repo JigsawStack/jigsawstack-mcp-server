@@ -20,7 +20,7 @@ const TRANSLATION: Tool = {
                 text: { type: "string", description: "Text in current langauge." },
                 target_language: { type: "string", description: "Current Langauge code in en | es | jp format." },
             },
-            required: ["text", "current_language", "target_language"],
+            required: ["text", "target_language"],
         },
     };
 
