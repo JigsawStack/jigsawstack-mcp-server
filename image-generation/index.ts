@@ -14,7 +14,6 @@ import {
   ImageContent,
 } from "@modelcontextprotocol/sdk/types.js";
 
-
 const JIGSAWSTACK_API_KEY = process.env.JIGSAWSTACK_API_KEY;
 
 console.log("Checking for JIGSAWSTACK_API_KEY");
@@ -30,7 +29,6 @@ const jigsawStackClient = JigsawStack({
 });
 
 console.log("JigsawStack client created");
-
 
 // console.log("Testing the image_generation function");
 // const result = jigsawStackClient.image_generation({
@@ -60,7 +58,6 @@ console.log("JigsawStack client created");
   };
 }) */
 
-
 /*
 Supported Aspec
 1:1
@@ -76,20 +73,29 @@ Supported Aspec
 9:21
 */
 
-const generateImage = async (
-  prompt: string,
-  steps: string | number | undefined,
-  negative_prompt: string,
-) => {
+const generateImage = async (prompt: string, steps: string | number | undefined, negative_prompt: string) => {
   const parsedSteps = steps !== undefined ? Number(steps) : undefined;
   const result = await jigsawStackClient.image_generation({
     prompt: prompt,
+    steps: parsedSteps,
     advance_config: {
       negative_prompt: negative_prompt,
-      steps: parsedSteps,
-    }
+    },
   });
-  return result;
+
+  if (!result || !result.blob) {
+    throw new Error("Image generation failed or returned no result.");
+  }
+
+  const generatedImage = await result.blob();
+  const uploadResult = await jigsawStackClient.store.upload(generatedImage, {
+    temp_public_url: true,
+  });
+
+  if (!uploadResult || !uploadResult.temp_public_url) {
+    throw new Error("Failed to return the image URL.");
+  }
+  return uploadResult.temp_public_url;
 };
 
 const IMAGE_GENERATION: Tool = {
@@ -100,13 +106,16 @@ const IMAGE_GENERATION: Tool = {
     properties: {
       prompt: { type: "string", description: "The prompt to generate the image." },
       steps: { type: "string", description: "The number of steps for image generation." },
+      aspect_ratio: {
+        type: "string",
+        description: "The aspect ratio for the image. Supported values: '1:1', 16:9, 21:9, 3:2, 2:3, 4:5, 5:4, 3:4, 4:3, 9:16, 9:21.",
+      },
       negative_prompt: { type: "string", description: "Negative prompt to avoid certain elements." },
     },
-    required: ["prompt"]
-  }
+    required: ["prompt"],
+  },
 };
 
-console.log("Creating a new instance of Server.");
 const server: Server = new Server(
   {
     name: "Image Generation",
@@ -121,51 +130,47 @@ const server: Server = new Server(
   }
 );
 
-console.log("Setting up server request handler, to return the tools");
 server.setRequestHandler(ListToolsRequestSchema, async () => ({
   tools: [IMAGE_GENERATION],
 }));
 
-console.log("Setting up server request handler, to handle the request");
 server.setRequestHandler(CallToolRequestSchema, async (request) => {
   switch (request.params.name) {
     case "image_generation": {
       try {
-        const { prompt, steps, negative_prompt } = request.params.arguments as {
-          
-          prompt: string,
-          steps: number | undefined | string,
-          negative_prompt: string,
+        const { prompt, aspect_ratio, steps, negative_prompt } = request.params.arguments as {
+          prompt: string;
+          aspect_ratio: string | undefined;
+          steps: number | undefined | string;
+          negative_prompt: string;
         };
 
-        try{
-          if(steps !== undefined){
+        try {
+          if (steps !== undefined) {
             Number(steps);
           }
-        }
-        catch(error){
+        } catch (error) {
           throw new McpError(ErrorCode.InvalidParams, `Invalid steps value: ${steps}`);
         }
 
         const result = await generateImage(prompt, steps, negative_prompt);
 
-        // convert the image from blob and return it as base64 content
-        const blob = await result.blob();
-        const arrayBuffer = await blob.arrayBuffer();
-        const base64Image = `data:image/png;base64,${Buffer.from(arrayBuffer).toString("base64")}`;
-        
         //return ImageContent
-        const content = [{
-          type: "text",
-          text: base64Image
-        }];
+        const content = [
+          {
+            type: "text",
+            text: result,
+          },
+        ];
         return { content };
       } catch (error: any) {
         console.error("Error processing IMAGE_GENERATION request:", error);
-        const content = [{
-          type: "text",
-          text: error.message
-        }];
+        const content = [
+          {
+            type: "text",
+            text: error.message,
+          },
+        ];
         return { content };
       }
     }
@@ -179,8 +184,3 @@ server.connect(transport).catch((error) => {
   console.error("Failed to start server:", error);
   process.exit(1);
 });
-console.log("We gucci, lesgoooo!");
-
-
-
-
