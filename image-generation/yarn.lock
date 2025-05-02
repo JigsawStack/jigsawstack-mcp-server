@@ -487,10 +487,10 @@ isomorphic-fetch@^3.0.0:
     node-fetch "^2.6.1"
     whatwg-fetch "^3.4.1"
 
-jigsawstack@^0.0.26:
-  version "0.0.26"
-  resolved "https://registry.yarnpkg.com/jigsawstack/-/jigsawstack-0.0.26.tgz#4c03d95b49e19250095ab0718daa52cbb1a814bc"
-  integrity sha512-6xsX0kM6A9nJ7jdlYIU7SvUcvNLaPvlxZULuISETY2u6T4bMjsY0u79It8uIU0m1/otpr4ZkO532W8F7JqIhjw==
+jigsawstack@^0.2.4:
+  version "0.2.4"
+  resolved "https://registry.yarnpkg.com/jigsawstack/-/jigsawstack-0.2.4.tgz#6637e97a61ae0a065b484f9d91ad7b526579e121"
+  integrity sha512-OGRsNOw74vVvD5JF8tcL/+CU7wTeq37fj3AWE+sD2wg8iKZ+bh0ddYsDAEsjc12FbfCB3C/IMpiK17Z/ESmprg==
   dependencies:
     isomorphic-fetch "^3.0.0"
 
