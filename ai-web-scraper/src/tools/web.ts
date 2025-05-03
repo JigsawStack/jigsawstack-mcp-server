@@ -25,7 +25,6 @@ async function registerWebTools(server: McpServer) {
     // element_prompts should be comma-separated strings, e.g. "title,h1" which will be converted to an array of strings.
     element_prompts: z.array(z.string()),
   };
-  console.log("Defining schema for ai_scrape tool:", aiScrapeSchema);
 
   try {
     server.tool(
@@ -58,7 +57,6 @@ async function registerWebTools(server: McpServer) {
         return { content: [{ type: "text", text: JSON.stringify(content, null, 2) }] };
       }
     );
-    console.log("Tool 'ai_scrape' registered successfully.");
   } catch (err) {
     console.error("Error registering tool 'ai_scrape':", err);
   }
