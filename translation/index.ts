@@ -67,12 +67,6 @@ const translate_text = async (text: string, target_language: string): Promise<st
   return JSON.stringify(result, null, 2);
 };
 
-const getImageBuffer = (base64Image: string): Buffer => {
-  //remove the header (if present)
-  //convert base64 to a Buffer
-  return Buffer.from(base64Image, "base64");
-};
-
 async function base64ToBlob(base64Data: string): Promise<Blob> {
   const contentType = "image/jpeg"; // Or your desired content type
   const response = await fetch(`data:${contentType};base64,${base64Data}`);
