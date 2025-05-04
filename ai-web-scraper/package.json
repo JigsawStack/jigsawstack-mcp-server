@@ -1,12 +1,14 @@
 {
   "name": "ai-web-scraper",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "A suite of small fast models that automate the boring and complex tasks in every tech stack with specialized finetuning",
   "type": "module",
   "bin": {
     "jigsawstack-mcp-server": "dist/index.js"
   },
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "build": "tsc",
     "watch": "tsc --watch",
@@ -16,17 +18,30 @@
     "format": "biome check --write ."
   },
   "devDependencies": {
+    "@types/node": "^16.11.7",
     "shx": "^0.3.4",
-    "typescript": "^4.5.4",
-    "@types/node": "^16.11.7"
+    "typescript": "^4.5.4"
   },
-  "keywords": ["web", "mcp", "server", "jigsawstack", "small", "fast", "models", "automation", "tasks", "specialized", "finetuning"],
+  "keywords": [
+    "web",
+    "mcp",
+    "server",
+    "jigsawstack",
+    "small",
+    "fast",
+    "models",
+    "automation",
+    "tasks",
+    "specialized",
+    "finetuning"
+  ],
   "author": "JigsawStack",
   "license": "ISC",
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.6.0",
     "dotenv": "^16.4.7",
-    "jigsawstack": "^0.0.26",
+    "jigsawstack": "^0.2.4",
+    "ts-node": "^10.9.2",
     "zod": "3.24.2"
   }
 }

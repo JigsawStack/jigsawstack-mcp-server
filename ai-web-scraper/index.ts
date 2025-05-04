@@ -14,6 +14,4 @@ registerWebTools(server);
 //creating a new stdio server transport instance for the server
 const transport = new StdioServerTransport();
 
-console.log("Connecting server...");
 await server.connect(transport);
-console.log("Server connected and listening for requests.");
