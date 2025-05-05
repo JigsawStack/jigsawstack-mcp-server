@@ -1,10 +1,7 @@
 import { JigsawStack } from "jigsawstack";
-import { z } from "zod";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { Server } from "@modelcontextprotocol/sdk/server/index.js";
 import { CallToolRequestSchema, ListToolsRequestSchema, Tool, McpError, ErrorCode, TextContent } from "@modelcontextprotocol/sdk/types.js";
-import fs from "fs";
-import { get } from "http";
 
 const TEXT_TRANSLATION: Tool = {
   name: "text-translation",
@@ -25,7 +22,7 @@ const IMAGE_TRANSLATION: Tool = {
   inputSchema: {
     type: "object",
     properties: {
-      imageBase64: { type: "string", description: "base64Encoded Image that has to be translated" },
+      image: { type: "string", description: "Image URL or base64Encoded Image that has to be translated" },
       target_language: { type: "string", description: "Current Langauge code in en | es | jp format." },
     },
     required: ["imageBase64", "target_language"],
@@ -69,30 +66,46 @@ const translate_text = async (text: string, target_language: string): Promise<st
 
 async function base64ToBlob(base64Data: string): Promise<Blob> {
   const contentType = "image/jpeg"; // Or your desired content type
-  const response = await fetch(`data:${contentType};base64,${base64Data}`);
-  const blob = await response.blob();
-  return blob;
+  const buffer = Buffer.from(base64Data, "base64");
+  return new Blob([buffer], { type: contentType });
 }
 
 const isValidBase64 = (str: string): boolean => {
-  //cean whitespace from the string.
+  //clean whitespace from the string.
   const cleaned = str.trim();
-  //a simple regex check: Base64 strings consist of A-Z, a-z, 0-9, +, / with optional '=' padding.
   //also ensure the length is a multiple of 4.
-  return /^[A-Za-z0-9+/]+={0,2}$/.test(cleaned) && cleaned.length % 4 === 0;
+  return /^[A-Za-z0-9+/]+={0,2}$/.test(str) && str.length % 4 === 0;
 };
 
-const translate_image = async (imageBase64: string, target_language: string): Promise<string> => {
-  //first upload the image to JigsawStack
-  if (!isValidBase64(imageBase64)) {
-    throw new Error("Invalid base64 image data");
+const isValidURL = (url: string): boolean => {
+  try {
+    new URL(url);
+    return true;
+  } catch {
+    return false;
   }
+};
 
-  const imageBlob = await base64ToBlob(imageBase64);
+const translate_image = async (input: string, target_language: string): Promise<string> => {
+  //first upload the image to JigsawStack
+  const imageUrlOrBase64 = input.startsWith("data:") ? input.split(",")[1] : input;
+  if (!isValidBase64(imageUrlOrBase64) && !isValidURL(imageUrlOrBase64)) {
+    throw new Error("Invalid image data: must be a valid base64 string or URL");
+  }
+  let result;
+  if (isValidURL(imageUrlOrBase64)) {
+    result = await jigsawStackClient.translate.image({
+      url: imageUrlOrBase64,
+      target_language: target_language,
+    });
+  } else {
+    // If it's a URL, fetch the image and convert it to Blob
+    const imageBlob = await base64ToBlob(imageUrlOrBase64);
 
-  const result = await jigsawStackClient.translate.image(imageBlob, {
-    target_language: target_language,
-  });
+    result = await jigsawStackClient.translate.image(imageBlob, {
+      target_language: target_language,
+    });
+  }
 
   const translatedImageBuffer = await result.buffer();
 
@@ -125,12 +138,12 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       }
 
     case "image-translation":
-      const { imageBase64, target_language: targetLanguage } = request.params.arguments as {
-        imageBase64: string;
+      const { image, target_language: targetLanguage } = request.params.arguments as {
+        image: string;
         target_language: string;
       };
       try {
-        const result = await translate_image(imageBase64, targetLanguage);
+        const result = await translate_image(image, targetLanguage);
         return { content: [{ type: "text", text: result }] };
       } catch (error) {
         return { content: [{ type: "text", text: `Failed to perform translation: ${(error as Error).message}` }], isError: true };
