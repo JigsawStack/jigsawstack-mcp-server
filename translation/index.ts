@@ -25,7 +25,7 @@ const IMAGE_TRANSLATION: Tool = {
       image: { type: "string", description: "Image URL or base64Encoded Image that has to be translated" },
       target_language: { type: "string", description: "Current Langauge code in en | es | jp format." },
     },
-    required: ["imageBase64", "target_language"],
+    required: ["image", "target_language"],
   },
 };
 
