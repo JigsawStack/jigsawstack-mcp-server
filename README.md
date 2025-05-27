@@ -5,6 +5,8 @@ JigsawStack MCP (Model Context Protocol) Server is a versatile platform designed
 
 Start by obtaining your JIGSAWSTACK_API_KEY from the our website. You will need this key to access the JigsawStack services. You can get your API key by signing up for a free account at [JigsawStacks](https://jigsawstack.com/dashboard).
 
+You can also install our MCPs via [Smithery AI](https://smithery.ai/?q=jigsawstack)
+
 ## Installation
 
 ### Prerequisites
