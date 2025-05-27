@@ -3,7 +3,9 @@
 ## Introduction
 JigsawStack MCP (Model Context Protocol) Server is a versatile platform designed to facilitate the integration and management of various tools. Each directory within the server represents a distinct tool that can be utilized for different purposes by an LLM. The server is built using Node.js and Express.js, and each tool is encapsulated within its own directory, making it easy to add, remove, or update tools without affecting the overall system.
 
-Start by obtaining your JIGSAWSTACK_API_KEY from the our website. You will need this key to access the JigsawStack services. You can get your API key by signing up for a free account at [JigsawStacks](https://jigsawstack.com/dashboard).
+Start by obtaining your JIGSAWSTACK_API_KEY from the our website. You will need this key to access the JigsawStack services. You can get your API key by signing up for a free account at [JigsawStack](https://jigsawstack.com/dashboard).
+
+You can also install our MCPs via [Smithery AI](https://smithery.ai/?q=jigsawstack)
 
 ## Installation
 
