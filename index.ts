@@ -1,5 +1,4 @@
 import { JigsawStack } from "jigsawstack";
-import { z } from "zod";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { Server } from "@modelcontextprotocol/sdk/server/index.js";
 import { CallToolRequestSchema, ListToolsRequestSchema, Tool, McpError, ErrorCode } from "@modelcontextprotocol/sdk/types.js";
