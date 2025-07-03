@@ -4,12 +4,12 @@
     "module": "ESNext",
     "moduleResolution": "node",
     "outDir": "./dist",
-    "rootDir": ".",
+    "rootDir": "./src",
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true
   },
-  "include": ["src/**/*", "test/**/*", "types/**/*", "scripts/**/*", "index.ts"],
+  "include": ["src/**/*", "test/**/*", "types/**/*", "scripts/**/*", "src/index.ts"],
   "exclude": ["node_modules", "dist"]
 }
