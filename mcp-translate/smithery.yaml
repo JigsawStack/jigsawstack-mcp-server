@@ -1,0 +1,20 @@
+# Smithery configuration file: https://smithery.ai/docs/build/project-config
+
+startCommand:
+  type: stdio
+  commandFunction:
+    # A JS function that produces the CLI command based on the given config to start the MCP on stdio.
+    |-
+    (config) => ({ command: 'node', args: ['dist/index.js'], env: { JIGSAWSTACK_API_KEY: config.jigsawstackApiKey } })
+  configSchema:
+    # JSON Schema defining the configuration options for the MCP.
+    type: object
+    required:
+      - jigsawstackApiKey
+    properties:
+      jigsawstackApiKey:
+        type: string
+        default: ""
+        description: Your JigsawStack API key
+  exampleConfig:
+    jigsawstackApiKey: your_api_key_here
