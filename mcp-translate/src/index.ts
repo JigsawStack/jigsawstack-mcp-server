@@ -4,7 +4,7 @@ import { CallToolRequestSchema, ListToolsRequestSchema, McpError, ErrorCode } fr
 import tools from "./tools.js";
 import jigsawStackClient from "./lib/index.js";
 
-const server: Server = new Server(
+const server: Server = new Server( 
   {
     name: "JigsawStack Translate",
     version: "0.0.1",
