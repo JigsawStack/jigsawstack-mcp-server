@@ -1,7 +1,7 @@
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { Server } from "@modelcontextprotocol/sdk/server/index.js";
 import { CallToolRequestSchema, ListToolsRequestSchema, McpError, ErrorCode } from "@modelcontextprotocol/sdk/types.js";
-import tools from "./tools.js";
+  import { TRANSLATE } from "./tools.js";
 import jigsawStackClient from "./lib/index.js";
 
 const server: Server = new Server(
@@ -13,14 +13,14 @@ const server: Server = new Server(
   {
     capabilities: {
       tools: {
-        ...tools,
+        translate: TRANSLATE,
       },
     },
   }
 );
 
 server.setRequestHandler(ListToolsRequestSchema, async () => ({
-  tools
+  tools: [TRANSLATE],
 }));
 
 server.setRequestHandler(CallToolRequestSchema, async (request) => {

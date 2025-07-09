@@ -1,4 +1,7 @@
 import { JigsawStack } from "jigsawstack";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 const JIGSAWSTACK_API_KEY = process.env.JIGSAWSTACK_API_KEY;
 
