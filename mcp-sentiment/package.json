@@ -1,6 +1,6 @@
 {
-  "name": "sentiment",
-  "version": "0.1.1",
+  "name": "jigsawstack-sentiment",
+  "version": "0.0.1",
   "description": "Analyze the sentiment of your text with AI, powered by JigsawStack",
   "type": "module",
   "bin": {
