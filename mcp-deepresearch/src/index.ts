@@ -6,9 +6,9 @@ import jigsawStackClient from "./lib/index.js";
 
 const server: Server = new Server(
   {
-    name: "JigsawStack",
-    version: "0.1.1",
-    description: "JigsawStack MCP Server",
+    name: "JigsawStack Deep Research",
+    version: "0.0.1",
+    description: "Deep Research with AI, powered by JigsawStack",
   },
   {
     capabilities: {
