@@ -4,7 +4,7 @@ import { CallToolRequestSchema, ListToolsRequestSchema, McpError, ErrorCode } fr
 import tools from "./tools.js";
 import jigsawStackClient from "./lib/index.js";
 
-const server: Server = new Server( 
+const server: Server = new Server(
   {
     name: "JigsawStack Translate",
     version: "0.0.1",
@@ -18,18 +18,6 @@ const server: Server = new Server(
     },
   }
 );
-
-
-
-const analyze = async (
-  text: string,
-): Promise<string> => {
-  const payload: any = {};
-  if (text) payload.text = text;
-
-  const result = await jigsawStackClient.sentiment(payload);
-  return JSON.stringify(result, null, 2);
-};
 
 server.setRequestHandler(ListToolsRequestSchema, async () => ({
   tools
@@ -49,8 +37,6 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         return { content: [{ type: "text", text: `Failed to translate text: ${(error as Error).message}` }], isError: true };
       }
     }
-
-
 
     default:
       throw new McpError(ErrorCode.MethodNotFound, `Unknown tool: ${request.params.name}`);
