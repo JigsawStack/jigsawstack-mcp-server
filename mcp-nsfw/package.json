@@ -1,7 +1,7 @@
 {
-  "name": "sentiment",
-  "version": "0.1.1",
-  "description": "Analyze the sentiment of your text with AI, powered by JigsawStack",
+  "name": "jigsawstack-nsfw",
+  "version": "0.0.1",
+  "description": "NSFW content detection with AI, powered by JigsawStack",
   "type": "module",
   "bin": {
     "jigsawstack-mcp-server": "dist/index.js"
