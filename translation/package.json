@@ -1,7 +1,7 @@
 {
-  "name": "jigsawstack-translate",
-  "version": "0.0.1",
-  "description": "Translate text with AI, powered by JigsawStack",
+  "name": "ai-translation",
+  "version": "0.1.0",
+  "description": "Let AI translate your text, in 180+ language pairs! From JigsawStack.",
   "type": "module",
   "bin": {
     "jigsawstack-mcp-server": "dist/index.js"
@@ -26,7 +26,7 @@
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.6.0",
     "dotenv": "^16.4.7",
-    "jigsawstack": "^0.2.10",
+    "jigsawstack": "^0.2.4",
     "ts-node": "^10.9.2",
     "zod": "3.24.2"
   }
