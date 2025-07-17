@@ -1,3 +1,5 @@
+[![MseeP.ai Security Assessment Badge](https://mseep.net/pr/jigsawstack-jigsawstack-mcp-server-badge.png)](https://mseep.ai/app/jigsawstack-jigsawstack-mcp-server)
+
 # JigsawStack MCP Server
 
 ## Introduction
